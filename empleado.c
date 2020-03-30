@@ -132,7 +132,7 @@ void listarVentasEmpleado(Lista *lista, int rut){
     aux = lista->inicio;
     for (int indice = 1; indice <= lista->cantidad; indice++){
         if (aux->datos->rutVendedor == rut){
-            printf("\nVenta numero %i:\n", contador);
+            printf("\nVenta numero: %i\n", contador);
             mostrarDatos(aux->datos);
             contador++;
         }
@@ -140,47 +140,49 @@ void listarVentasEmpleado(Lista *lista, int rut){
     }
 }
 
-int cantidadRutVendedor(Lista *lista){
+bool noEnLista(Lista *lista, int rut){
     Nodo *aux;
     aux = lista->inicio;
-    int total = 0, cantidad = 1, primerRut = aux->datos->rutVendedor;
-    for (int indice = 1; indice <= lista->cantidad; indice++){
-        if (aux->datos->rutVendedor != primerRut) cantidad++;
-        aux = aux->siguiente;
-    }
-    return cantidad;
+    
+    while (aux != NULL)
+	{
+		if (aux->datos->rutVendedor == rut) return false;
+        aux = aux ->siguiente;
+	}
+    return true;
 }
-
-bool comprobarRepeticion(int *arreglo, int rut, int largo){
-    for (int indice = 0; indice < largo ; indice++){
-        if (arreglo[indice] == rut) return true;
-    }
-    return false;
-}
-
-/*void llenarArregloRuts(Lista *lista, int *arregloRutVendedores, int largo){
-    Nodo *aux;
-    aux = lista->inicio;
-    for (int indice = 0; indice < lista->cantidad; indice++){
-        if (aux->datos->rutVendedor != primerRut) cantidad++;
-        aux = aux->siguiente;
-    }
-}*/
 
 void promedioCadaEmpleado(Lista *lista){
-    Nodo *aux;
-    aux = lista->inicio;
-    int cantidadRut = cantidadRutVendedor(lista), rutActual = aux->datos->rutVendedor, cantidadVentas;
-    int arregloRutVendedores[cantidadRut];
-    for (int i = 1; i <= lista->cantidad; i++){
-        cantidadVentas = 0;
-        rutActual = arregloRutVendedores[i];
-        aux = lista->inicio;
-        for (int j = 1; j <= lista->cantidad; j++){
-            if(rutActual == aux->datos->rutVendedor)cantidadVentas++;
-            aux = aux->siguiente;
+    Lista *listaRutUnicos;
+    listaRutUnicos = constructorLista();
+    Nodo *nodoRecorrido, *nodoRutUnicos;
+    nodoRecorrido = lista->inicio;
+    int rut;
+    float promedioVendedor = 0, cantidadVendedor;
+    // Rellenar lista Rut Unicos
+    for (int i = 0; i<lista->cantidad; i++){
+        rut = nodoRecorrido->datos->rutVendedor;
+        if (noEnLista(listaRutUnicos, rut)){
+            appendLista(listaRutUnicos, 0, 0, rut, 0);
         }
-        printf("Rut vendedor: %i\nPromedio de cantidad de ventas: %i", rutActual, (cantidadVentas/lista->cantidad));
+        nodoRecorrido = nodoRecorrido->siguiente;
+    }
+    nodoRutUnicos = listaRutUnicos->inicio;
+    // Iteramos sobre lista rut unicos
+    for (int i = 0; i < listaRutUnicos->cantidad; i++){
+        cantidadVendedor = 0;
+        nodoRecorrido = lista->inicio;
+        // Iteramos sobre lista original
+        for (int j = 0; j < lista->cantidad; j++){
+            // Si el rutUnico es igual al rut en la lista entonces aumenta en 1 la cantidad vendida por ese vendedor
+            if (nodoRecorrido->datos->rutVendedor == nodoRutUnicos->datos->rutVendedor)cantidadVendedor++;
+            nodoRecorrido = nodoRecorrido->siguiente;
+        }
+        printf("\nRut Vendedor: %i\n\n", nodoRutUnicos->datos->rutVendedor);
+        // Calculamos promedio del vendedor
+        promedioVendedor = cantidadVendedor/lista->cantidad;
+        printf("Promedio vendido en cantidad: %.3f\n", promedioVendedor);
+        nodoRutUnicos = nodoRutUnicos->siguiente;
     }
 }  
 
@@ -191,7 +193,7 @@ void mostrarLista(Lista *L){
 
 	while (aux != NULL)
 	{
-		printf("%i, %i\n", aux->datos->montoProducto, aux->datos->rutComprador);
+        mostrarDatos(aux->datos);
 		aux = aux->siguiente;
         // printf("Posicion: %i\n", posicion);
         posicion++;

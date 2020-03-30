@@ -1,5 +1,11 @@
 #include "main.h"
 
+void pausa(){
+    printf("\nPresione cualquier tecla para continuar...");
+    getchar();
+    getchar();
+}
+
 int main(){
     int opcion,rutVendedor, rutComprador, monto, total;
     bool getOut = false;
@@ -24,26 +30,25 @@ int main(){
                             printf("Ingrese el monto: ");
                             scanf("%i", &monto);
                             appendLista(lista, monto, rutComprador, rutVendedor, lista->cantidad+1);
-                            mostrarLista(lista);
-                            sleep(1);
+                            pausa();
                             break;
                         // Total de ventas
                         case 2:
                             system("clear");
                             montoTotal(lista);
-                            sleep(1);
+                            pausa();
                             break;
                         // Ventas de un empleado
                         case 3:
                             system("clear");
                             listarVentasEmpleado(lista, rutVendedor);
-                            sleep(4);
+                            pausa();
                             break;
                         // Promedio de la cantidad que vende cada empleado
                         case 4:
                             system("clear");
                             promedioCadaEmpleado(lista);
-                            sleep(4);
+                            pausa();
                             break;
                         // Atras
                         case 5:
@@ -58,6 +63,7 @@ int main(){
                 break;
             // Salir    
             case 2: 
+                system("clear");
                 exit(1);
                 break;
             default:
